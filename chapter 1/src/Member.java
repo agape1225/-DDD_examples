@@ -1,9 +1,17 @@
 public class Member {
     private Password password;
-    public void changePassword(String currentPassword, String newPassword){
-        if(!password.match(currentPassword)){
-            throw new PasswordNotMatchException();
+    public void changePassword(String oldPw, String newPw){
+        if(!matchPassword(oldPw)){
+            throw new BadPasswordException();
         }
-        this.password = newPassword;
+        setPassword(newPw);
+    }
+    public boolean matchPassword(String pwd){
+        return passwordEncoder.matches(pwd);
+    }
+
+    private void setPassword(String newPw){
+        if(isEmpty(newPw)) throw new IllegalArgumentException("no new password");
+        this.password = newPw;
     }
 }

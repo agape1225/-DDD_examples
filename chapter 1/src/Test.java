@@ -1,9 +1,17 @@
+import java.util.ArrayList;
+
 class Test{
-    Specification<MemberData> spec = SpecBuilder.builder(MemberData.class)
-            .ifTrue(searchRequest.isOnlyNotBlocked(),
-                    () -> MemberDataSpecs.nonBlocked())
-            .ifHasText(searchRequest.getName(),
-                    name -> MemberDataSpecs.nameLike(sear chRequest.getName()))
-            .toSpec();
-    List<MemberData> result = memberDataDao.findAll(spec, PageRequest.of(0, 5));
+    @Transactional
+    public OrderNo placeOrder(OrderRequest orderRequest){
+        List<ValidationError> errors = new ArrayList<>();
+        if(orderRequest == null){
+            errors.add(ValidationError.of("empty"));
+        }else{
+            if(orderRequest.getOrderMemberId() == null)
+                errors.add(ValidationError.of("ordererMemberId", "empty"));
+            if(orderRequest.getOrderProducts() == null)
+                errors.add(ValidationError.of("orderProducts", "empty"));
+        }
+        if(!errors.isEmpty()) throw new ValidationErrorException(errors);
+    }
 }
