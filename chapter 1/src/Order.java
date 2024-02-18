@@ -2,6 +2,21 @@ public class Order {
     private Orderer orderer;
     private Money totalAmounts;
     private List<OrderLine> orderLines;
+    private List<Cupon> usedCupons;
+
+    public void calculateAmounts(DiscountCalculationService disCalSvc, MemberGrade grade){
+        Money totalAmounts = getTotalAmounts();
+        Money discountAmounts = disCalSvc.calculateDiscountAmounts(this.orderLines, this.coupons, grade);
+        this.paymentAmounts = totalAmounts.minus(discountAmounts);
+    }
+
+    private Money calculatePayAmount(){
+        Money discount = usedCupons.map(copon -> calculateDiscount(cupon))
+                .reduce(Money(0), (v1, v2) -> v1.add(v2));
+        Money membershipDiscount = calculateDiscount(orderer.getMember().getGrade());
+
+        return totalAmounts.minus(discount).minus(memberShipDiscount);
+    }
 
     public void changeShippingInfo(ShippingInfo newShippingInfo, boolean useNewShippingAddrAsMemberAddr){
         if(useNewShippingAddrAsMemberAddr){
