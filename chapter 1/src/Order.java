@@ -1,4 +1,11 @@
+@Entity
+@Table
 public class Order {
+    @EmbeddedId
+    private OrderNo number;
+
+    @Version
+    private long version;
     private Orderer orderer;
     private Money totalAmounts;
     private List<OrderLine> orderLines;
