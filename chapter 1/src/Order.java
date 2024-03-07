@@ -1,6 +1,12 @@
 @Entity
 @Table
 public class Order {
+
+    public void changeShippingInfo(ShippingInfo newShippingInfo){
+        verifyNotYetShipped();
+        setShippingInfo(newShippingInfo);
+        Events.raise(new ShippingInfoChangedEvent(number, newShippingInfo))
+    }
     @EmbeddedId
     private OrderNo number;
 
